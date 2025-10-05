@@ -19,7 +19,7 @@ const bubbleStyle = computed(() => ({
   width: props.bubble.size + 'px',
   height: props.bubble.size + 'px',
   left: (props.bubble.leftPercent || 0) + '%',
-  animationDuration: (props.bubble.duration || 12) + 's',
+  animationDuration: '15s',
   animationDelay: (props.bubble.delay || 0) + 's',
   zIndex: props.bubble.zIndex ?? 1,
 }))
