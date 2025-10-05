@@ -58,13 +58,36 @@ const avatarUrls = [
   "https://i.pravatar.cc/100?img=30",
 ];
 
+function getDeviceType() {
+  const width = window.innerWidth;
+  if (width < 768) return "mobile";
+  if (width < 1024) return "tablet";
+  return "desktop";
+}
+
+let deviceType = getDeviceType();
+window.addEventListener("resize", () => {
+  deviceType = getDeviceType();
+});
+
+function getConfigByDevice() {
+  if (deviceType === "mobile") {
+    return { max: 50, minSize: 20, maxSize: 60 };
+  } else if (deviceType === "tablet") {
+    return { max: 50, minSize: 40, maxSize: 80 };
+  } else {
+    return { max: 100, minSize: 40, maxSize: 120 };
+  }
+}
+
 function createAvatar() {
+  const { minSize, maxSize } = getConfigByDevice();
   return {
     id: idCounter++,
     x: Math.random() * 100,
-    size: Math.round(40 + Math.random() * 80), 
-    duration: 8 + Math.random() * 12, 
-    delay: Math.random() * 10,
+    size: Math.round(minSize + Math.random() * (maxSize - minSize)),
+    duration: 5 +  Math.random()*10, 
+    delay: Math.random() * 5,
     img: avatarUrls[Math.floor(Math.random() * avatarUrls.length)],
   };
 }
