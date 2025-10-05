@@ -86,7 +86,7 @@ function createAvatar() {
     id: idCounter++,
     x: Math.random() * 100,
     size: Math.round(minSize + Math.random() * (maxSize - minSize)),
-    duration: 5 +  Math.random()*10, 
+    duration: 5 +  Math.random()*15, 
     delay: Math.random() * 5,
     img: avatarUrls[Math.floor(Math.random() * avatarUrls.length)],
   };
