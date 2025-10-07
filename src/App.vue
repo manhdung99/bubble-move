@@ -30,8 +30,8 @@ function createAvatar() {
     id: idCounter++,
     x: Math.random() * 100,
     size: Math.round(minSize + Math.random() * (maxSize - minSize)),
-    duration: 5 + Math.random() * 15,
-    delay: Math.random() * 5,
+    duration: 15 + Math.random() * 20,
+    delay: Math.random() * 15,
     img: avatarUrls[Math.floor(Math.random() * avatarUrls.length)],
   };
 }
@@ -58,10 +58,10 @@ onMounted(() => {
   const sunTexture = textureLoader.load("/planet/2k_sun.jpg");
   const sunMaterial = new THREE.MeshBasicMaterial({ map: sunTexture });
   const sun = new THREE.Mesh(new THREE.SphereGeometry(10, 64, 64), sunMaterial);
-  scene.add(sun);
+  // scene.add(sun);
 
-  const sunLight = new THREE.PointLight(0xffcc33, 2.5, 500);
-  scene.add(sunLight);
+  // const sunLight = new THREE.PointLight(0xffcc33, 2.5, 500);
+  // scene.add(sunLight);
 
   const planetData = [
     { name: "Mercury", size: 2, dist: 20, speed: 0.004, texture: "/planet/2k_mercury.jpg" },
@@ -79,7 +79,7 @@ onMounted(() => {
     const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 1 });
     const mesh = new THREE.Mesh(new THREE.SphereGeometry(p.size, 32, 32), mat);
     mesh.position.x = p.dist;
-    scene.add(mesh);
+    // scene.add(mesh);
     return { mesh, ...p, angle: Math.random() * Math.PI * 2 };
   });
 
