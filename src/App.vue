@@ -22,7 +22,7 @@ const MAX_AVATARS = 80;
 const bubbles = ref([]);
 let idCounter = 0;
 
-const avatarUrls = Array.from({ length: 30 }, (_, i) => `https://i.pravatar.cc/100?img=${i + 1}`);
+const avatarUrls = Array.from({ length: 40 }, (_, i) => `/avatar/${i + 1}.jpg`);
 
 function createAvatar() {
   const { minSize, maxSize } = getConfigByDevice();
@@ -184,7 +184,7 @@ onBeforeUnmount(() => {
   }
 
   100% {
-    transform: translateY(-120vh);
+    transform: translateY(-100vh);
     opacity: 0;
   }
 }
