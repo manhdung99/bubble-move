@@ -1,6 +1,18 @@
-/* reset */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body, #app { height: 100%; }
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+@import "tailwindcss";
 
 body {
   font-family: Inter, Arial, sans-serif;
@@ -8,7 +20,6 @@ body {
   color: #111;
 }
 
-/* container chính */
 .app-root {
   position: relative;
   width: 100%;
@@ -16,25 +27,25 @@ body {
   overflow: hidden;
 }
 
-/* keyframes: bong bóng bay từ dưới lên */
 @keyframes rise {
   0% {
     transform: translateY(0) scale(1);
     opacity: 0;
   }
+
   6% {
     opacity: 1;
   }
+
   100% {
     transform: translateY(-130vh) scale(1.05);
     opacity: 0;
   }
 }
 
-/* lớp chung cho bong bóng */
 .bubble {
   position: absolute;
-  bottom: -40px; /* bắt đầu bên dưới vùng nhìn thấy */
+  bottom: -40px;
   border-radius: 50%;
   overflow: hidden;
   border: 3px solid rgba(20, 20, 20, 0.08);
@@ -45,11 +56,10 @@ body {
   box-shadow: 0 6px 18px rgba(15, 15, 15, 0.06);
   will-change: transform;
   animation-name: rise;
-  animation-timing-function: cubic-bezier(.23,.88,.46,.99);
+  animation-timing-function: cubic-bezier(.23, .88, .46, .99);
   animation-iteration-count: infinite;
 }
 
-/* avatar fill */
 .bubble img {
   width: 100%;
   height: 100%;
@@ -57,21 +67,20 @@ body {
   display: block;
 }
 
-/* placeholder nếu không có ảnh */
 .bubble .placeholder {
   width: 50%;
   height: 50%;
-  background: rgba(0,0,0,0.12);
+  background: rgba(0, 0, 0, 0.12);
   border-radius: 50%;
 }
 
-/* header controls */
 .header {
   position: absolute;
   top: 10px;
   left: 16px;
   z-index: 50;
 }
+
 .controls button {
   padding: 8px 12px;
   border-radius: 8px;
@@ -81,6 +90,7 @@ body {
   cursor: pointer;
   margin-right: 8px;
 }
+
 .controls button.secondary {
   background: #6b7280;
 }

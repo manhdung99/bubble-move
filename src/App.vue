@@ -1,62 +1,131 @@
 <template>
-  <div class="bubble-container">
-    <img
-      v-for="(bubble, index) in bubbles"
-      :key="bubble.id"
-      class="avatar"
-      :src="bubble.img"
-      :style="{
+  <div id="app" class="relative w-screen h-screen overflow-hidden">
+    <canvas ref="space" class="absolute top-0 left-0 w-full h-full"></canvas>
+
+    <img v-for="(bubble, index) in bubbles" :key="bubble.id" :src="bubble.img"
+      class="absolute rounded-full shadow-lg avatar" :style="{
         left: bubble.x + 'vw',
         width: bubble.size + 'px',
         height: bubble.size + 'px',
         animationDuration: bubble.duration + 's',
         animationDelay: bubble.delay + 's',
-      }"
-      @animationend="resetBubble(index)"
-    />
+      }" @animationend="resetBubble(index)" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-const MAX_AVATARS = 100;
+const MAX_AVATARS = 80;
 const bubbles = ref([]);
 let idCounter = 0;
-let refillTimer = null;
 
-const avatarUrls = [
-  "https://i.pravatar.cc/100?img=1",
-  "https://i.pravatar.cc/100?img=2",
-  "https://i.pravatar.cc/100?img=3",
-  "https://i.pravatar.cc/100?img=4",
-  "https://i.pravatar.cc/100?img=5",
-  "https://i.pravatar.cc/100?img=6",
-  "https://i.pravatar.cc/100?img=7",
-  "https://i.pravatar.cc/100?img=8",
-  "https://i.pravatar.cc/100?img=9",
-  "https://i.pravatar.cc/100?img=10",
-  "https://i.pravatar.cc/100?img=11",
-  "https://i.pravatar.cc/100?img=12",
-  "https://i.pravatar.cc/100?img=13",
-  "https://i.pravatar.cc/100?img=14",
-  "https://i.pravatar.cc/100?img=15",
-  "https://i.pravatar.cc/100?img=16",
-  "https://i.pravatar.cc/100?img=17",
-  "https://i.pravatar.cc/100?img=18",
-  "https://i.pravatar.cc/100?img=19",
-  "https://i.pravatar.cc/100?img=20",
-  "https://i.pravatar.cc/100?img=21",
-  "https://i.pravatar.cc/100?img=22",
-  "https://i.pravatar.cc/100?img=23",
-  "https://i.pravatar.cc/100?img=24",
-  "https://i.pravatar.cc/100?img=25",
-  "https://i.pravatar.cc/100?img=26",
-  "https://i.pravatar.cc/100?img=27",
-  "https://i.pravatar.cc/100?img=28",
-  "https://i.pravatar.cc/100?img=29",
-  "https://i.pravatar.cc/100?img=30",
-];
+const avatarUrls = Array.from({ length: 30 }, (_, i) => `https://i.pravatar.cc/100?img=${i + 1}`);
+
+function createAvatar() {
+  const { minSize, maxSize } = getConfigByDevice();
+  return {
+    id: idCounter++,
+    x: Math.random() * 100,
+    size: Math.round(minSize + Math.random() * (maxSize - minSize)),
+    duration: 5 + Math.random() * 15,
+    delay: Math.random() * 5,
+    img: avatarUrls[Math.floor(Math.random() * avatarUrls.length)],
+  };
+}
+
+function resetBubble(index) {
+  bubbles.value[index] = createAvatar();
+}
+
+onMounted(() => {
+  const canvas = document.querySelector("#app canvas");
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 50, 150);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setClearColor(0x000010);
+
+  const ambient = new THREE.AmbientLight(0xffffff, 0.3);
+  scene.add(ambient);
+
+  const textureLoader = new THREE.TextureLoader();
+  const sunTexture = textureLoader.load("https://www.solarsystemscope.com/textures/download/2k_sun.jpg");
+  const sunMaterial = new THREE.MeshBasicMaterial({ map: sunTexture });
+  const sun = new THREE.Mesh(new THREE.SphereGeometry(10, 64, 64), sunMaterial);
+  scene.add(sun);
+
+  const sunLight = new THREE.PointLight(0xffcc33, 2.5, 500);
+  scene.add(sunLight);
+
+  const planetData = [
+    { name: "Mercury", size: 2, dist: 20, speed: 0.04, texture: "https://www.solarsystemscope.com/textures/download/2k_mercury.jpg" },
+    { name: "Venus", size: 3, dist: 30, speed: 0.03, texture: "https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg" },
+    { name: "Earth", size: 3.5, dist: 40, speed: 0.025, texture: "https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg" },
+    { name: "Mars", size: 3, dist: 50, speed: 0.02, texture: "https://www.solarsystemscope.com/textures/download/2k_mars.jpg" },
+    { name: "Jupiter", size: 7, dist: 70, speed: 0.015, texture: "https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg" },
+    { name: "Saturn", size: 6, dist: 90, speed: 0.012, texture: "https://www.solarsystemscope.com/textures/download/2k_saturn.jpg" },
+    { name: "Uranus", size: 4, dist: 110, speed: 0.009, texture: "https://www.solarsystemscope.com/textures/download/2k_uranus.jpg" },
+    { name: "Neptune", size: 4, dist: 130, speed: 0.007, texture: "https://www.solarsystemscope.com/textures/download/2k_neptune.jpg" },
+  ];
+
+  const planets = planetData.map((p) => {
+    const tex = textureLoader.load(p.texture);
+    const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 1 });
+    const mesh = new THREE.Mesh(new THREE.SphereGeometry(p.size, 32, 32), mat);
+    mesh.position.x = p.dist;
+    scene.add(mesh);
+    return { mesh, ...p, angle: Math.random() * Math.PI * 2 };
+  });
+
+  const starGeometry = new THREE.BufferGeometry();
+  const starVertices = [];
+  for (let i = 0; i < 2000; i++) {
+    const x = (Math.random() - 0.5) * 2000;
+    const y = (Math.random() - 0.5) * 2000;
+    const z = (Math.random() - 0.5) * 2000;
+    starVertices.push(x, y, z);
+  }
+  starGeometry.setAttribute("position", new THREE.Float32BufferAttribute(starVertices, 3));
+  const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 1 });
+  const stars = new THREE.Points(starGeometry, starMaterial);
+  scene.add(stars);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.5;
+
+  window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  function animate() {
+    requestAnimationFrame(animate);
+    planets.forEach((p) => {
+      p.angle += p.speed;
+      p.mesh.position.x = Math.cos(p.angle) * p.dist;
+      p.mesh.position.z = Math.sin(p.angle) * p.dist;
+      p.mesh.rotation.y += 0.01;
+    });
+    sun.rotation.y += 0.002;
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  for (let i = 0; i < MAX_AVATARS; i++) {
+    bubbles.value.push(createAvatar());
+  }
+});
 
 function getDeviceType() {
   const width = window.innerWidth;
@@ -80,74 +149,42 @@ function getConfigByDevice() {
   }
 }
 
-function createAvatar() {
-  const { minSize, maxSize } = getConfigByDevice();
-  return {
-    id: idCounter++,
-    x: Math.random() * 100,
-    size: Math.round(minSize + Math.random() * (maxSize - minSize)),
-    duration: 5 +  Math.random()*15, 
-    delay: Math.random() * 5,
-    img: avatarUrls[Math.floor(Math.random() * avatarUrls.length)],
-  };
-}
-
-function resetBubble(index) {
-  bubbles.value[index] = createAvatar();
-}
-
-onMounted(() => {
-  for (let i = 0; i < MAX_AVATARS; i++) {
-    bubbles.value.push(createAvatar());
-  }
-
-  refillTimer = setInterval(() => {
-    const i = Math.floor(Math.random() * bubbles.value.length);
-    bubbles.value[i] = createAvatar();
-  }, 500);
-});
-
 onBeforeUnmount(() => {
-  if (refillTimer) clearInterval(refillTimer);
+  bubbles.value = [];
 });
 </script>
 
-<style scoped>
-.bubble-container {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: linear-gradient(to top, #001f3f, #0074d9);
-}
 
+<style scoped>
 .avatar {
   position: absolute;
-  bottom: -160px;
-  border-radius: 50%;
+  bottom: -150px;
   object-fit: cover;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
   animation-name: rise;
   animation-timing-function: linear;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   will-change: transform, opacity;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
 @keyframes rise {
   0% {
-    transform: translateY(0) scale(1);
+    transform: translateY(-10vh);
     opacity: 0;
   }
+
   10% {
     opacity: 1;
   }
+
   90% {
     opacity: 1;
   }
+
   100% {
-    transform: translateY(-120vh) scale(1.05);
+    transform: translateY(-120vh);
     opacity: 0;
   }
 }

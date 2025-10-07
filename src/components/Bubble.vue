@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="bubble"
-    :style="bubbleStyle"
-    :title="bubble.title || ''"
-  >
+  <div class="bubble" :style="bubbleStyle" :title="bubble.title || ''">
     <img v-if="bubble.img" :src="bubble.img" alt="avatar" />
     <div v-else class="placeholder"></div>
   </div>
@@ -25,5 +21,4 @@ const bubbleStyle = computed(() => ({
 }))
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
