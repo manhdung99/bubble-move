@@ -28,7 +28,7 @@ function createAvatar() {
   const { minSize, maxSize } = getConfigByDevice();
   return {
     id: idCounter++,
-    x: Math.random() * 100,
+    x: Math.random() * 90,
     size: Math.round(minSize + Math.random() * (maxSize - minSize)),
     duration: 15 + Math.random() * 20,
     delay: Math.random() * 15,
@@ -122,9 +122,10 @@ onMounted(() => {
 
   animate();
 
-  for (let i = 0; i < MAX_AVATARS; i++) {
-    bubbles.value.push(createAvatar());
-  }
+const { max } = getConfigByDevice();
+for (let i = 0; i < max; i++) {
+  bubbles.value.push(createAvatar());
+}
 });
 
 function getDeviceType() {
@@ -141,11 +142,11 @@ window.addEventListener("resize", () => {
 
 function getConfigByDevice() {
   if (deviceType === "mobile") {
-    return { max: 50, minSize: 20, maxSize: 60 };
+    return { max: 15, minSize: 50, maxSize: 80 };
   } else if (deviceType === "tablet") {
-    return { max: 50, minSize: 40, maxSize: 80 };
+    return { max: 30, minSize: 80, maxSize: 120 };
   } else {
-    return { max: 100, minSize: 40, maxSize: 120 };
+    return { max: 60, minSize: 100, maxSize: 160 };
   }
 }
 
