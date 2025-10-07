@@ -55,7 +55,7 @@ onMounted(() => {
   scene.add(ambient);
 
   const textureLoader = new THREE.TextureLoader();
-  const sunTexture = textureLoader.load("https://www.solarsystemscope.com/textures/download/2k_sun.jpg");
+  const sunTexture = textureLoader.load("/planet/2k_sun.jpg");
   const sunMaterial = new THREE.MeshBasicMaterial({ map: sunTexture });
   const sun = new THREE.Mesh(new THREE.SphereGeometry(10, 64, 64), sunMaterial);
   scene.add(sun);
@@ -64,14 +64,14 @@ onMounted(() => {
   scene.add(sunLight);
 
   const planetData = [
-    { name: "Mercury", size: 2, dist: 20, speed: 0.04, texture: "https://www.solarsystemscope.com/textures/download/2k_mercury.jpg" },
-    { name: "Venus", size: 3, dist: 30, speed: 0.03, texture: "https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg" },
-    { name: "Earth", size: 3.5, dist: 40, speed: 0.025, texture: "https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg" },
-    { name: "Mars", size: 3, dist: 50, speed: 0.02, texture: "https://www.solarsystemscope.com/textures/download/2k_mars.jpg" },
-    { name: "Jupiter", size: 7, dist: 70, speed: 0.015, texture: "https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg" },
-    { name: "Saturn", size: 6, dist: 90, speed: 0.012, texture: "https://www.solarsystemscope.com/textures/download/2k_saturn.jpg" },
-    { name: "Uranus", size: 4, dist: 110, speed: 0.009, texture: "https://www.solarsystemscope.com/textures/download/2k_uranus.jpg" },
-    { name: "Neptune", size: 4, dist: 130, speed: 0.007, texture: "https://www.solarsystemscope.com/textures/download/2k_neptune.jpg" },
+    { name: "Mercury", size: 2, dist: 20, speed: 0.004, texture: "/planet/2k_mercury.jpg" },
+    { name: "Venus", size: 3, dist: 30, speed: 0.003, texture: "/planet/2k_venus_surface.jpg" },
+    { name: "Earth", size: 3.5, dist: 40, speed: 0.0025, texture: "/planet/2k_earth_daymap.jpg" },
+    { name: "Mars", size: 3, dist: 50, speed: 0.002, texture: "/planet/2k_mars.jpg" },
+    { name: "Jupiter", size: 7, dist: 70, speed: 0.0015, texture: "/planet/2k_jupiter.jpg" },
+    { name: "Saturn", size: 6, dist: 90, speed: 0.0012, texture: "/planet/2k_saturn.jpg" },
+    { name: "Uranus", size: 4, dist: 110, speed: 0.0009, texture: "/planet/2k_uranus.jpg" },
+    { name: "Neptune", size: 4, dist: 130, speed: 0.0007, texture: "/planet/2k_neptune.jpg" },
   ];
 
   const planets = planetData.map((p) => {
